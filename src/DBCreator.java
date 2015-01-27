@@ -1,4 +1,5 @@
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -44,12 +45,13 @@ public class DBCreator {
 
 	public static void main(String[] args) {
 
-		Long l = (long) 3;
+		Long l = (long) 1;
 		String classes[] = new String[2];
 		classes[0] = "Class";
 		classes[1] = "Person";
 		Model.Class classs = new Model.Class("modelklasy", l);
-		Model.Class class2 = new Model.Class("modelklasy3234", (long) 4);
+		Model.Class class2 = new Model.Class("modelklasy3234", (long) 2);
+		
 		ReflectionMetaModelCreator rmmc = new ReflectionMetaModelCreator(MODEL,
 				classes);
 		MetaModel metaModel = rmmc.create();
@@ -66,10 +68,9 @@ public class DBCreator {
 //			clearDataBase(conn);
 //			createDataBase(conn, scriptsList);
 			DAOImpl<Model.Class> dao = new DAOImpl<Model.Class>(conn, metaModel, Class.forName("Model.Class"));
-			Model.Class c = dao.findByID(1);
-			Model.Class c2 = dao.findByID(2);
-			dao.insert(classs);
-			dao.insert(class2);
+//			dao.insert(classs);
+//			dao.insert(class2);
+			dao.delete(class2);
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

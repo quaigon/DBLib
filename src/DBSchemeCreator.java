@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class DBSchemeCreator {
 		StringBuilder create = new StringBuilder();
 		create.append("create table ").append(t.getTableName()).append("(");
 		List<Column> columns = t.getColumns();
-		
+
 		for (int i = 0; i < columns.size(); i++) {
 			if (i == columns.size() - 1) {
 				create.append(columns.get(i).getName()).append(" ")

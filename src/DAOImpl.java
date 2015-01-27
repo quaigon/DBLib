@@ -46,11 +46,11 @@ public class DAOImpl<T> implements DAOInterface<T> {
 	@Override
 	public boolean insert(T obj) {
 		int i = 0;
+		boolean result = false;
 		Class<?> objClass = obj.getClass();
 		String tableName = objClass.getSimpleName();
 		String createStatement = qb.buildCreateStatement(tableName);
 		Method[] methods = objClass.getMethods();
-		System.out.println(tableName);
 		try {
 			PreparedStatement stmt = dbConenction
 					.prepareStatement(createStatement);
@@ -58,10 +58,10 @@ public class DAOImpl<T> implements DAOInterface<T> {
 				if (m.getName().startsWith("get")
 						&& !m.getName().equals("getClass")) {
 					i++;
-					System.out.println(m.getName());
 					Object value = m.invoke(obj, new Object[0]);
 					stmt.setObject(i, value);
 				}
+				result = true;
 			}
 
 			stmt.executeUpdate();
@@ -79,21 +79,85 @@ public class DAOImpl<T> implements DAOInterface<T> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(createStatement);
 
-		return false;
+		return result;
 	}
 
 	@Override
 	public boolean update(T obj) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		int i = 0;
+		Class<?> objClass = obj.getClass();
+		String tableName = objClass.getSimpleName();
+		String updateStatement = qb.buildUpdateStatement(tableName);
+		Method[] methods = objClass.getMethods();
+		System.out.println(tableName);
+
+		try {
+			PreparedStatement stmt = dbConenction
+					.prepareStatement(updateStatement);
+			for (Method m : methods) {
+				if (m.getName().startsWith("get")
+						&& !m.getName().equals("getClass")) {
+					i++;
+					Object value = m.invoke(obj, new Object[0]);
+					stmt.setObject(i, value);
+				}
+				result = true;
+			}
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 	@Override
 	public boolean delete(T obj) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		Class<?> objClass = obj.getClass();
+		String tableName = objClass.getSimpleName();
+		String deleteStatement = qb.buildDeleteStatement(tableName);
+		System.out.println(deleteStatement);
+		Method[] methods = objClass.getMethods();
+		try {
+			PreparedStatement stmt = dbConenction
+					.prepareStatement(deleteStatement);
+			for (Method m : methods) {
+				if (m.getName().equals("getId")) {
+				Object value = m.invoke(obj, new Object[0]);
+				System.out.println(value);
+				stmt.setObject(1, value);
+				}
+			}
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 }

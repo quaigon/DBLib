@@ -15,17 +15,45 @@ public class QueryBuilder {
 			if ((i + 1) != columnList.size()) {
 				createStatement.append(columnList.get(i).getName() + ", ");
 			} else {
-				createStatement.append(columnList.get(i).getName() + ") values ( ");
-			}		
+				createStatement.append(columnList.get(i).getName()
+						+ ") values ( ");
+			}
 		}
 		for (int i = 0; i < columnList.size(); i++) {
 			if ((i + 1) != columnList.size()) {
 				createStatement.append("?, ");
 			} else {
 				createStatement.append("?)");
-			}		
+			}
 		}
 
 		return createStatement.toString();
+	}
+
+	public String buildUpdateStatement(String tableName) {
+		List<Column> columnList = metaModel.getTable(tableName).getColumns();
+		StringBuilder updateStatement = new StringBuilder();
+		updateStatement.append("update " + tableName + " set ");
+		for (int i = 0; i < columnList.size(); i++) {
+			if (!columnList.get(i).getName().equals("id")) {
+				if ((i + 2) != columnList.size()) {
+					updateStatement.append(columnList.get(i).getName() + "=?,");
+				} else {
+					updateStatement.append(columnList.get(i).getName() + "=?");
+				}
+			}
+		}
+
+		updateStatement.append(" where id=?");
+
+		return updateStatement.toString();
+	}
+
+	public String buildDeleteStatement(String tableName) {
+		StringBuilder deleteStatement = new StringBuilder();
+		
+		deleteStatement.append("delete from " + tableName + " where id=?");
+
+		return deleteStatement.toString();
 	}
 }
