@@ -1,16 +1,15 @@
 
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class H2ColumnTypeMapper.
+ * Implementacja ColumnTypeMappera dla bazy danych H2
  */
 public class H2ColumnTypeMapper implements ColumnTypeMapper {
 
 	/**
-	 * Map type.
+	 * Mapuje typ kolumny z ColumnType na typ bazodanowy
 	 *
-	 * @param type the type
-	 * @return the string
+	 * @param type typ Kolumny
+	 * @return typ w bazie danych jako String
 	 */
 	@Override
 	public String mapType(ColumnType type) {

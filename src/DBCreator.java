@@ -1,26 +1,41 @@
-
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import Model.Teacher;
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DBCreator.
+ */
 public class DBCreator {
 
+	/** Stala zawierajca nazwe modelu  */
 	private static final String MODEL = "Model";
+	/** Stala zawierajca nazwe drugiego modelu  */
+	private static final String MODEL2 = "Model2";
+	/** Stala zawierajaca url bazy danych. */
 	private static final String DB_URL = "jdbc:h2:tcp://localhost/~/testbase";
-	private static final String DB_USER = "admin";
-	private static final String DB_PASSWD = "admin";
 	
-	public static void createDataBase (Connection dbConnection, List <String> scripts) {
+	/** Stala zawierajaca nazwe uzytkownika bazy */
+	private static final String DB_USER = "admin";
+	
+	/** Stala zawierajaca haslo uzytkownika bazy  */
+	private static final String DB_PASSWD = "admin";
+
+	/**
+	 * Tworzy tabelki w bazie danych na podstawie skryptow
+	 *
+	 * @param dbConnection polaczenie do bazy danych
+	 * @param scripts lista skryptow ktora ma byc uzyta do stworzenia tabelek w bazie
+	 */
+	public static void createDataBase(Connection dbConnection,
+			List<String> scripts) {
 		Statement stmt = null;
-		
+
 		try {
 			stmt = dbConnection.createStatement();
-			
+
 			for (String script : scripts) {
 				stmt.executeUpdate(script);
 			}
@@ -28,12 +43,17 @@ public class DBCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public static void clearDataBase (Connection dbConnection) {
+
+	/**
+	 * Usuwanie tabelek z bazy danych.
+	 *
+	 * @param dbConnection polaczenie do bazy danych
+	 */
+	public static void clearDataBase(Connection dbConnection) {
 		Statement stmt = null;
-		
+
 		try {
 			stmt = dbConnection.createStatement();
 			stmt.executeUpdate("drop all objects");
@@ -43,6 +63,11 @@ public class DBCreator {
 		}
 	}
 
+	/**
+	 * Metoda main
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 
 		Long l = (long) 1;
@@ -51,26 +76,28 @@ public class DBCreator {
 		classes[1] = "Person";
 		Model.Class classs = new Model.Class("modelklasy", l);
 		Model.Class class2 = new Model.Class("modelklasy3234", (long) 2);
-		
+//		String classes2[] = new String[2];
+//		classes[0] = "Testowy";
+//		classes[1] = "Testowy2";
 		ReflectionMetaModelCreator rmmc = new ReflectionMetaModelCreator(MODEL,
 				classes);
 		MetaModel metaModel = rmmc.create();
 		H2ColumnTypeMapper mapper = new H2ColumnTypeMapper();
 		DBSchemeCreator dbsc = new DBSchemeCreator(metaModel, mapper);
-		QueryBuilder qb = new QueryBuilder(metaModel);
 		List<String> scriptsList = dbsc.getCreates();
-//		for (String s : scriptsList) {
-//			System.out.println(s);
-//		}
+		// for (String s : scriptsList) {
+		// System.out.println(s);
+		// }
 		try {
 			Connection conn = DriverManager.getConnection(DB_URL, DB_USER,
 					DB_PASSWD);
-//			clearDataBase(conn);
-//			createDataBase(conn, scriptsList);
-			DAOImpl<Model.Class> dao = new DAOImpl<Model.Class>(conn, metaModel, Class.forName("Model.Class"));
-//			dao.insert(classs);
-//			dao.insert(class2);
-			dao.delete(class2);
+			 clearDataBase(conn);
+			 createDataBase(conn, scriptsList);
+			DAOImpl<Model.Class> dao = new DAOImpl<Model.Class>(conn,
+					metaModel, Class.forName("Model.Class"));
+			 dao.insert(classs);
+			 dao.insert(class2);
+//			dao.delete(class2);
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -79,8 +106,6 @@ public class DBCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
 }

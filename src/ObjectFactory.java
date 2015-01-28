@@ -3,16 +3,37 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa tworzaca obiekt w javie na podstawie metaModelu za pomoca mechanizmu refleksji
+ *
+ * @param <T> typ tworzonego obiektu
+ */
 public class ObjectFactory<T> {
 
+	/** Klasa modelowa tabelki */
 	private Class<?> clazz;
+	
+	/** Meta model bazy danych */
 	private MetaModel metaModel;
 
+	/**
+	 * Tworzy nowa instancje ObjectFactory
+	 *
+	 * @param klasa tworzonego obiektu
+	 * @param metaModel bazy danych
+	 */
 	public ObjectFactory(Class<?> clazz, MetaModel metaModel) {
 		this.clazz = clazz;
 		this.metaModel = metaModel;
 	}
 
+	/**
+	 * Tworzy nowy obiekt javowy na podstawie danych z bazydanych
+	 *
+	 * @param rs ResultSet z danymi z ktorych ma powstac obiekt
+	 * @return the t
+	 */
 	@SuppressWarnings("unchecked")
 	public T createObject(ResultSet rs) {
 		T object = null;

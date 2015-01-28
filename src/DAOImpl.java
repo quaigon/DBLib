@@ -1,4 +1,3 @@
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -6,13 +5,32 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Implementacja interfejsu DAOimpl zapewniajacego funkcjonalnosc SCRUD
+ *
+ * @param <T> typ obslugiwanego obiektu przez DAO
+ */
 public class DAOImpl<T> implements DAOInterface<T> {
 
+	/** Polaczenie do bazy danych */
 	private Connection dbConenction;
+	
+	/** MetaModel obslugiwanej bazy danych  */
 	private MetaModel metaModel;
+	
+	/** Klasa obiektu obslugiwanego */
 	private Class<?> clazz;
+	
+	/** QueryBuilder tworzacy zapytania dobazy danych */
 	private QueryBuilder qb;
 
+	/**
+	 * Instantiates a new DAO impl.
+	 *
+	 * @param dbConnection the db connection
+	 * @param metaModel the meta model
+	 * @param class1 the class1
+	 */
 	DAOImpl(Connection dbConnection, MetaModel metaModel, Class<?> class1) {
 		this.dbConenction = dbConnection;
 		this.metaModel = metaModel;
@@ -20,12 +38,16 @@ public class DAOImpl<T> implements DAOInterface<T> {
 		qb = new QueryBuilder(metaModel);
 	}
 
+	/* (non-Javadoc)
+	 * @see DAOInterface#findByID(long)
+	 */
 	@Override
 	public T findByID(long id) {
 		T obj = null;
 		PreparedStatement stmt = null;
-		String select = "select * from " + clazz.getSimpleName().toLowerCase()
-				+ " where id = ?";
+		
+		String select = qb.buildSelectByIdStatement(clazz.getSimpleName().toLowerCase());
+		
 		try {
 			stmt = dbConenction.prepareStatement(select,
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -43,6 +65,9 @@ public class DAOImpl<T> implements DAOInterface<T> {
 		return obj;
 	}
 
+	/* (non-Javadoc)
+	 * @see DAOInterface#insert(java.lang.Object)
+	 */
 	@Override
 	public boolean insert(T obj) {
 		int i = 0;
@@ -83,6 +108,9 @@ public class DAOImpl<T> implements DAOInterface<T> {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see DAOInterface#update(java.lang.Object)
+	 */
 	@Override
 	public boolean update(T obj) {
 		boolean result = false;
@@ -123,6 +151,9 @@ public class DAOImpl<T> implements DAOInterface<T> {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see DAOInterface#delete(java.lang.Object)
+	 */
 	@Override
 	public boolean delete(T obj) {
 		boolean result = false;

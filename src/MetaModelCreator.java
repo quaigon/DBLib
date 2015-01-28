@@ -1,17 +1,12 @@
 
-
-
-// TODO: Auto-generated Javadoc
 /**
- * The Interface MetaModelCreator.
+ * Interfejs tworzacy metaModel
  */
 public interface MetaModelCreator {
 	/**
-	 * Creates the MetaModel
+	 * Tworzy metaModel
 	 *
-	 * @param field the field
-	 * @param fieldType the field type
-	 * @return the meta model
+	 * @return MetaModel bazy danych stworzony na podstawie modelu
 	 */
 	MetaModel create ();
 
